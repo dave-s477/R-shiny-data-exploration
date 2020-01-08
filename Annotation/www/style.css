@@ -1,0 +1,141 @@
+/*#pageHeader {
+  
+}*/
+
+#compare {
+  background-color: #f9f9f9;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 19px;
+}
+.loader {
+  position: fixed;
+  bottom: 3%;
+  right: 5%;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #3c8dbc;
+  animation: loader 2s infinite ease;
+}
+.loader-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #3c8dbc;
+  animation: loader-inner 2s infinite ease-in;
+}
+@keyframes loader {
+  0% {transform: rotate(0deg);}
+  25% {transform: rotate(180deg);}
+  50% {transform: rotate(180deg);}
+  75% {transform: rotate(360deg);}
+  100% {transform: rotate(360deg);}
+}
+@keyframes loader-inner {
+  0% {height: 0%;}
+  25% {height: 0%;}
+  50% {height: 100%;}
+  75% {height: 100%;}
+  100% {height: 0%;}
+}
+
+.controlpanel {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 19px;
+  border-top-color: transparent;
+}
+.btn-block{
+  display: block;
+  margin-bottom: 2px;
+}
+.checkbox-inline, .radio-inline {
+    margin-top: 0;
+    margin-left: 10px;
+}
+.help-text-btn {
+    background-color: #3c8dbc;
+    border-color: #367fa9;
+    color: #fff;
+    padding: 6px 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.multiradio {
+        -webkit-column-count: 4; /* Chrome, Safari, Opera */
+        -moz-column-count: 4;    /* Firefox */
+        column-count: 4;
+}
+.multicol1 {
+        -webkit-column-count: 2; /* Chrome, Safari, Opera */
+        -moz-column-count: 2;    /* Firefox */
+        column-count: 2;
+}
+.multicol2 {
+        -webkit-column-count: 3; /* Chrome, Safari, Opera */
+        -moz-column-count: 3;    /* Firefox */
+        column-count: 3;
+}
+.multicol3 {
+        -webkit-column-count: 3; /* Chrome, Safari, Opera */
+        -moz-column-count: 3;    /* Firefox */
+        column-count: 3;
+        -moz-column-fill: auto;
+        -column-fill: auto;
+        height: 150px;
+}
+
+.controlElements {
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+        min-height: 20px;
+        padding: 19px;
+        margin-bottom: 19px;
+}
+.topLevelControl {
+        background-color: #fec44f;
+}
+.middleLevelControl {
+        background-color: #fee391;
+}
+.bottomLevelControl {
+        background-color: #fff7bc;
+}
+.start-loader {
+    position: fixed;
+    background: #000000;
+    opacity: 0.9;
+    z-index: 1001;
+    left: 0px;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: #FFFFFF;
+}
+.loader-msg {
+    top: 30%;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.btn-select{
+    min-width: 100px;
+}
+.btn-select:before{
+    content:"Select All";
+    min-width: 100px;
+}
+.btn-unselect{
+    min-width: 100px;
+}
+.btn-unselect:before{
+    content:"Un-Select All";
+    min-width: 100px;
+}

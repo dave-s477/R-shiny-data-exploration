@@ -1,0 +1,100 @@
+---
+title: "Inside Explorer Report"
+output: pdf_document
+params:
+  title: Your data      # The name of the output can be passed to markdown
+  mainPlotExists: TRUE  # Explicitly states whether there is one main plot given in the data (A main plot is generated in the modul, which calls the pdf generation)
+  inputs: NA            # Expected is a name list (a shiny input object converted to a list)
+  plots: NA             # Expected is a list of plots, plots are given with a height element: plots[x] = list(plot = somePlot, height = someHeightValue). Height will be interpreted directly as inches
+  explicitPattern: -1
+---
+```{r echo=FALSE}
+subchunkify <- function(g, fig_height=7, fig_width=5) {
+  g_deparsed <- paste0(deparse(
+    function() {g}
+  ), collapse = '')
+  
+  sub_chunk <- paste0("
+  `","``{r sub_chunk_", floor(runif(1) * 10000), ", fig.height=", fig_height, ", fig.width=", fig_width, ", echo=FALSE}",
+  "\n(", 
+    g_deparsed
+    , ")()",
+  "\n`","``
+  ")
+  
+  cat(knitr::knit(text = knitr::knit_expand(text = sub_chunk), quiet = TRUE))
+}
+```
+
+```{r echo=FALSE, results='asis'}
+# First the title is printed
+cat(params$title, "\n\n")
+
+pattern <- c()
+if(params$mainPlotExists){
+  if(!is.null(params$explicitPattern)){
+    if(params$explicitPattern[1] == -1){
+      l <- length(params$plots)-1
+      if(l < 1)
+        l <- -1
+      pattern <- c("^((?![0-9]|Ign).)*$", paste("^(?!.*Ign).*", 1:l, ".*$", sep=""))
+    } else {
+      pattern <- c("^((?![0-9]|Ign).)*$", paste("^(?!.*Ign).*", params$explicitPattern, ".*$", sep=""))
+    }
+  }
+} else {
+  if(!is.null(params$explicitPattern)){
+    if(params$explicitPattern[1] == -1){
+      l <- length(params$plots)
+      if(l < 1)
+        l <- -1
+      pattern <- paste("^(?!.*Ign).*", 1:l, ".*$", sep="")
+    } else {
+      pattern <- paste("^(?!.*Ign).*", params$explicitPattern, ".*$", sep="")
+    }
+  }
+}
+
+# Lapply creates a own output, which is suppressed with invisible.
+# We loop over the number of recieved plots.
+# The corresponding inputs to plots have to be named correctly in order to match them.
+if(length(params$plots) > 0){
+invisible(lapply(1:length(params$plots), function(k){
+  cat("Plot and associated inputs\n\n")
+
+  # Printing out the first received plot
+  if(!is.null(params$plots[[k]])){
+    subchunkify(params$plots[[k]]$plot, params$plots[[k]]$height, 8)
+  }
+
+  # Now we match
+  ind <- grep(pattern[k], names(params$inputs), perl = TRUE)
+  for(i in ind){
+    cat("Parameter: ", tail(strsplit(names(params$inputs)[i], "-")[[1]], n = 1), "\n")
+    cat(", Value: ", params$inputs[[i]], "\n\n")
+  }
+
+
+  if(!is.null(params$plots[[k]]$additionalBaggage)){
+      if(length(params$plots[[k]]$additionalBaggage) > 0){
+        for(l in 1:length(params$plots[[k]]$additionalBaggage)){
+          cat("\n\nAdditional plots: \n")
+          subchunkify(params$plots[[k]]$additionalBaggage[[l]]$plot(), params$plots[[k]]$additionalBaggage[[l]]$height, 8)
+          for(i in 1:length(params$plots[[k]]$additionalBaggage[[l]])){
+            if(!(names(params$plots[[k]]$additionalBaggage[[l]][i]) %in% c("plot", "height"))){
+              if(grepl("reactive", names(params$plots[[k]]$additionalBaggage[[l]][i]))){
+                cat("Parameter: ", names(params$plots[[k]]$additionalBaggage[[l]][i]), "\n")
+                cat(", Value: ", as.character(params$plots[[k]]$additionalBaggage[[l]][[i]]()), "\n\n")
+              } else {
+                cat("Parameter: ", names(params$plots[[k]]$additionalBaggage[[l]][i]), "\n")
+                cat(", Value: ", as.character(params$plots[[k]]$additionalBaggage[[l]][[i]]), "\n\n")
+              }
+            }
+          }
+        }
+      }
+    }
+  cat("\n\n\n\n")
+}))
+}
+```
